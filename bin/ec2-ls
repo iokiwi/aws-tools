@@ -1,0 +1,11 @@
+#!/bin/bash
+
+aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" \
+    --query 'Reservations[].Instances[].{
+        LaunchTime: LaunchTime,
+        InstanceId: InstanceId,
+        Name: Tags[?Key==`Name`].Value | [0],
+        PrivateIpAddress: PrivateIpAddress,
+        PublicIpAddress: PublicIpAddress
+      }' \
+  | jq -c '.[]'
